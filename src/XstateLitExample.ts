@@ -9,6 +9,11 @@ import './pages/p-init.js';
 import './pages/p-default.js';
 import './pages/p-order-color.js';
 import './pages/p-order-frame.js';
+import './pages/p-order-bake.js';
+import './pages/p-order-seat.js';
+import './pages/p-order-wheels.js';
+import './pages/p-order-handles.js';
+import './pages/p-order-shipit.js';
 
 export class XstateLitExample extends LitElement {
   static styles = css`
@@ -53,7 +58,7 @@ export class XstateLitExample extends LitElement {
   }
 
   public storeUpdated() {
-    console.log(this.store.state.event);
+    console.table({state: this.store.state.value, ...this.store.state.context });
   }
 
   render() {
@@ -64,6 +69,11 @@ export class XstateLitExample extends LitElement {
         <p-default class="${this.store.state.matches('default') ? 'active': ''}" ${animate(XstateLitExample.animateOptions)}></p-default>
         <p-order-color class="${this.store.state.matches({order: 'color'}) ? 'active': ''}" ${animate(XstateLitExample.animateOptions)}></p-order-color>
         <p-order-frame class="${this.store.state.matches({order: 'frame'}) ? 'active': ''}" ${animate(XstateLitExample.animateOptions)}></p-order-frame>
+        <p-order-bake class="${this.store.state.matches({order: 'bake'}) ? 'active': ''}" ${animate(XstateLitExample.animateOptions)}></p-order-bake>
+        <p-order-seat class="${this.store.state.matches({order: 'seat'}) ? 'active': ''}" ${animate(XstateLitExample.animateOptions)}></p-order-seat>
+        <p-order-wheels class="${this.store.state.matches({order: 'wheels'}) ? 'active': ''}" ${animate(XstateLitExample.animateOptions)}></p-order-wheels>
+        <p-order-handles class="${this.store.state.matches({order: 'handles'}) ? 'active': ''}" ${animate(XstateLitExample.animateOptions)}></p-order-handles>
+        <p-order-shipit class="${this.store.state.matches({order: 'shipit'}) ? 'active': ''}" ${animate(XstateLitExample.animateOptions)}></p-order-shipit>
       </div>
     `;
   }

@@ -8,6 +8,10 @@ export type OrderId = string | number | null;
 export interface AppContext {
 	// current active order
 	orderId: OrderId;
+	// how many orders are fulfilled
+	fulfilled: number;
+	// how many orders need to be fulfilled
+	backlog: number;
 }
 
 export type AppEvent =
@@ -30,6 +34,8 @@ export const storeMachine = createMachine({
 		events: createSchema<AppEvent>(),
 	},
 	context: {
+		fulfilled: 0,
+		backlog: 3,
 		orderId: null,
 	},
 	states: {
@@ -46,10 +52,11 @@ export const storeMachine = createMachine({
 		default: {
 			on: {
 				PREVIOUS: { target: 'init' },
-				FULFILL: { actions: 'fullfill', target: 'order' }
+				FULFILL: { actions: 'fulfill', target: 'order' }
 			}
 		},
 		order: {
+			id: "order",
 			initial: 'color',
 			states: {
 				color: {
@@ -57,17 +64,58 @@ export const storeMachine = createMachine({
 						NEXT: { target: 'frame' }
 					}
 				},
-				frame: {}
+				frame: {
+					on: {
+						NEXT: { target: 'bake' }
+					}
+				},
+				bake: {
+					on: {
+						NEXT: { target: 'seat' }
+					}
+				},
+				seat: {
+					on: {
+						NEXT: { target: 'wheels' }
+					}
+				},
+				wheels: {
+					on: {
+						NEXT: { target: 'handles' }
+					}
+				},
+				handles: {
+					on: {
+						NEXT: { target: 'shipit' }
+					}
+				},
+				shipit: {
+					on: {
+						NEXT: { target: 'complete' }
+					}
+				},
+				complete: {
+					on: {
+						'': [
+							{ target: '#app.default', actions: 'orderShip' }
+						]
+					}
+				}
 			}
 		}
 	},
 }, {
 	// Actions (anything that directly mutates state)
 	actions: {
-		fulfill: (context, event) => {
-			if (event.type !== 'FULFILL') return
-			assign({ orderId: event.orderId })
-		}
+		fulfill: assign((context, event) => {
+			// this looks weird but it was the only way typescript would
+			// accept it.
+			if (event.type === 'FULFILL') return {orderId: event.orderId }
+			return {};
+		}),
+		orderShip: assign((context, event) => {
+			return { orderId: null, fulfilled: context.fulfilled + 1 }
+		}),
 	},
 })
 

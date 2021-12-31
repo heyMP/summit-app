@@ -3,33 +3,20 @@ import { property, state } from 'lit/decorators.js';
 import { StoreBase } from '../store.js';
 import { variable } from '../globals.js';
 
-export class CNav extends StoreBase {
+export class COrderNav extends StoreBase {
   static styles = css`
     :host {
-			height: ${variable('navHeight')};
 			display: block;
     }
-
-		.base {
-			display: block;
-		}
-
-		img {
-			width: 100%;
-			max-width: 400px;
-		}
   `;
 
   render() {
     return html`
 			<div class="base" part="base">
-				${!this.store.state.matches('init') ? html`
-					<img src=${new URL('../../../assets/nav.png', import.meta.url)}>
-				` : ''}
-				<br>
+				<button>View Order</button>
 			</div>
     `;
   }
 }
 
-customElements.define('c-nav', CNav);
+customElements.define('c-order-nav', COrderNav);

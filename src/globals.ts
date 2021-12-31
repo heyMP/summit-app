@@ -2,7 +2,7 @@ import { css } from 'lit';
 import type { CSSResult } from 'lit';
 
 export type VariableName =
-	'navHeight'
+	| 'navHeight'
 
 export interface Token {
 	prop: CSSResult;
@@ -12,7 +12,7 @@ export interface Token {
 export const tokens: Record<VariableName, Token> = Object.freeze({
 	'navHeight': {
 		prop: css`--nav-height`,
-		value: css`190px`
+		value: css`135px`
 	}
 });
 
