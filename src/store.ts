@@ -1,95 +1,116 @@
+import { LitElement } from 'lit';
 import type { ReactiveControllerHost, ReactiveController } from 'lit';
-import { createMachine, send, assign, interpret } from 'xstate'
+import { createMachine, send, assign, interpret, createSchema } from 'xstate'
 import type { Interpreter, Subscription, StateMachine } from 'xstate';
 
-export interface CounterContext {
-	count: number
+export type OrderId = string | number | null;
+
+export interface AppContext {
+	// current active order
+	orderId: OrderId;
 }
 
-export type CounterEvent =
-  | { type: 'INCREMENT' }
-  | { type: 'DECREMENT' }
+export type AppEvent =
+  | { type: 'NEXT' }
+  | { type: 'PREVIOUS' }
+  | { type: 'FULFILL', orderId: OrderId }
 
-export type CounterTypestate =
-  | { value: 'init', context: CounterContext }
-  | { value: 'cooldown', context: CounterContext }
+export type AppTypestate =
+  | { value: 'init', context: AppContext }
+  | { value: 'default', context: AppContext }
+  | { value: 'fulfill', context: AppContext }
+  | { value: 'order', context: AppContext }
 
 // Edit your machine(s) here
-export const storeMachine = createMachine<CounterContext, CounterEvent, CounterTypestate>({
-	id: "counter",
-	initial: "init",
+export const storeMachine = createMachine({
+	id: "app",
+	initial: 'init',
+	schema: {
+		context: createSchema<AppContext>(),
+		events: createSchema<AppEvent>(),
+	},
 	context: {
-		count: 0,
+		orderId: null,
 	},
 	states: {
 		init: {
 			on: {
-				INCREMENT: {
-					actions: ['increment'],
-					cond: 'withinThreshold',
-				},
-				DECREMENT: {
-					actions: ['decrement'],
-					cond: 'isNotMin'
-				},
-				'': [
-					{ target: 'cooldown', cond: 'aboveThreshold' }
-				]
-			}
-		},
-		cooldown: {
+				NEXT: { target: 'default' }
+			},
 			after: {
-        1000: {
-          target: 'cooldown',
-          actions: 'decrement',
-          cond: (context) => context.count > 0
+        2000: {
+          target: 'default'
         }
       },
-      on: {
-				// only allow decrement in cooldown state
-				DECREMENT: {
-					actions: ['decrement'],
-					cond: 'isNotMin'
+		},
+		default: {
+			on: {
+				PREVIOUS: { target: 'init' },
+				FULFILL: { actions: 'fullfill', target: 'order' }
+			}
+		},
+		order: {
+			initial: 'color',
+			states: {
+				color: {
+					on: {
+						NEXT: { target: 'frame' }
+					}
 				},
-				'': [
-					{ target: 'init', cond: (context) => context.count === 0 }
-				]
+				frame: {}
 			}
 		}
 	},
 }, {
 	// Actions (anything that directly mutates state)
 	actions: {
-		increment: assign((context) => ({
-			count: context.count + 1
-		})),
-		decrement: assign((context) => ({
-			count: context.count - 1
-		})),
+		fulfill: (context, event) => {
+			if (event.type !== 'FULFILL') return
+			assign({ orderId: event.orderId })
+		}
 	},
-	// Guards
-	guards: {
-		withinThreshold: context => context.count < 10,
-		aboveThreshold: context => context.count >= 10,
-		isNotMin: context => context.count > 0,
-	}
 })
 
+export const store = interpret(storeMachine).start();
+
+/**
+ * Reactive Controller method for adding the store to your element
+ */
 export class StoreController implements ReactiveController {
   // reference to the host element using this controller
   host: ReactiveControllerHost & Element;
   store;
   subscription?: Subscription;
 
-  constructor(host: ReactiveControllerHost & Element, cb?: Function) {
+  constructor(host: ReactiveControllerHost & Element) {
     (this.host = host).addController(this);
-    this.store = interpret(storeMachine).start();
+    this.store = store;
+  }
+
+	hostConnected() {
 		this.subscription = this.store.subscribe(() => {
 			this.host.requestUpdate();
+			// @ts-ignore
+			if (!!this.host.storeUpdated)
+				// @ts-ignore
+				this.host.storeUpdated();
 		});
-  }
+	}
 
   hostDisconnected() {
     this.subscription?.unsubscribe();
+  }
+}
+
+
+/**
+ * Base Class for giving components access to the store. Uses the StoreController
+ * plus sets up a local store prop for easy access.
+ */
+export class StoreBase extends LitElement {
+  protected store;
+  constructor() {
+    super();
+    this.store = new StoreController(this).store;
   }
 }
