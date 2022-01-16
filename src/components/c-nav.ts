@@ -1,7 +1,7 @@
 import { css, html } from 'lit';
 import { variable } from '../globals.js';
-import { StoreBase } from '../store.js';
-import type { Store } from '../store.js';
+import { StoreBase, StoreSubscriptionController } from '../store.js';
+import type { Store, OrderRef } from '../store.js';
 
 export class CNav extends StoreBase {
   static styles = css`
@@ -31,14 +31,21 @@ export class CNav extends StoreBase {
 		}
   `;
 
+	private order: OrderRef = null;
+
+	storeUpdated() {
+		if (this.store.state.context.orderRef) {
+			this.order = new StoreSubscriptionController(this, this.store.state.context.orderRef).store;
+		}
+	}
+
   render() {
-		console.log(this.store.state.context.order?.state)
     return html`
 			<div class="base" part="base">
 				<div id="title">${this.store.state.context.title}</div>
 				<div id="order-fulfilled">${this.renderOrdersFilled(this.store)} orders filled</div>
 				<div id="points">${this.store.state.context.points} points</div>
-				<div id="countdown">${this.store.state.context.order?.state?.context?.countdown} seconds</div>
+				<div id="countdown">${this.order?.state.context.countdown} seconds</div>
 			</div>
     `;
   }

@@ -1,9 +1,11 @@
+import type { ReactiveController, ReactiveControllerHost } from 'lit';
 import { LitElement } from 'lit';
-import type { ReactiveControllerHost, ReactiveController } from 'lit';
-import { createMachine, send, assign, interpret, createSchema, spawn } from 'xstate'
-import type { Interpreter, Subscription, StateMachine } from 'xstate';
-import { createOrderMachine } from './machines/orders.js';
+import type { Interpreter, Subscription } from 'xstate';
+import { assign, createMachine, createSchema, interpret, spawn } from 'xstate';
 import type { Order, OrderId } from './machines/orders.js';
+import { createOrderMachine } from './machines/orders.js';
+
+export type OrderRef = Interpreter<Order> | null;
 
 export interface AppContext {
 	title: string;
@@ -15,7 +17,7 @@ export interface AppContext {
 	// orders
 	orders: [Order?];
 	// current active order
-	order: Interpreter<Order> | null;
+	orderRef: OrderRef;
 	// current active order
 	orderId: OrderId;
 }
@@ -47,7 +49,7 @@ export const storeMachine = createMachine({
 		backlog: 3,
 		orderId: null,
 		orders: [{ orderId: 1, countdown: 55 }],
-		order: null,
+		orderRef: null,
 	},
 	states: {
 		init: {
@@ -81,7 +83,7 @@ export const storeMachine = createMachine({
 				if (order) {
 					return {
 						orderId: event.orderId,
-						order: spawn(createOrderMachine(order))
+						orderRef: spawn(createOrderMachine(order))
 					}
 				}
 			}
@@ -121,6 +123,29 @@ export class StoreController implements ReactiveController {
 				this.host.storeUpdated();
 		})
 	}
+
+  hostDisconnected() {
+    this.subscription?.unsubscribe();
+  }
+}
+
+/**
+ * Subscribe to a specific Interpretor in a store.
+ */
+export class StoreSubscriptionController<T> implements ReactiveController {
+  // reference to the host element using this controller
+  host: ReactiveControllerHost & Element;
+  store: T | null = null;
+  subscription?: Subscription;
+
+  constructor(host: ReactiveControllerHost & Element, _store: T) {
+    (this.host = host).addController(this);
+    this.store = _store;
+		// @ts-ignore
+		this.subscription = this.store.subscribe(() => {
+			this.host.requestUpdate();
+		});
+  }
 
   hostDisconnected() {
     this.subscription?.unsubscribe();

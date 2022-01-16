@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit';
 import { property, state } from 'lit/decorators.js';
-import { StoreBase } from '../StoreBase.js';
+import { StoreBase } from '../store.js';
 import '../components/c-order-page.js';
 
 export class POrderShipit extends StoreBase {

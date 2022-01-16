@@ -1,15 +1,17 @@
-import { createMachine, send, assign, interpret, createSchema } from 'xstate'
+import { createMachine, send, assign, interpret, createSchema, sendParent, spawn } from 'xstate'
 import type { Interpreter, Subscription, StateMachine } from 'xstate';
 
 export type OrderId = string | number | null;
 
 export interface Order {
 	orderId: OrderId;
-	countdown: number | null;
+	countdown: number;
+	counterRef?: any | null;
 }
 
 export type OrderEvent =
   | { type: 'NEXT' }
+  | { type: 'TICK' }
 
 export const createOrderMachine = (order: Order) => createMachine({
 	id: 'order',
@@ -22,22 +24,20 @@ export const createOrderMachine = (order: Order) => createMachine({
 		// @ts-expect-error TS2783
 		orderId: null,
 		// @ts-expect-error TS2783
-		countdown: null,
+		countdown: 55,
+		counterRef: null,
 		...order
 	},
-	states: {
-		countdown: {
-			type: 'parallel',
-			after: {
-				1000: {
-					target: 'countdown',
-					actions: (context) => assign({
-						countdown: Number(context.countdown) - 1,
-					}),
-					cond: (context) => Number(context.countdown) > 0
-				}
-			}
+	// @ts-ignore
+	entry: assign({
+		counterRef: () => spawn(counterInterval)
+	}),
+	on: {
+		'TICK': {
+			actions: 'decrementCount',
 		},
+	},
+	states: {
 		color: {
 			on: {
 				NEXT: { target: 'frame' }
@@ -75,4 +75,21 @@ export const createOrderMachine = (order: Order) => createMachine({
 		},
 		complete: { type: 'final' }
 	}
+}, {
+	actions: {
+		// @ts-ignore
+		decrementCount: assign((context, event) => {
+			return {
+				countdown: context.countdown - 1
+			}
+		}),
+	}
 });
+
+const counterInterval = (callback: any, receive: any) => {
+  const intervalId = setInterval(() => {
+    callback({ type: 'TICK' });
+  }, 1000);
+
+  return () => { clearInterval(intervalId); }
+}

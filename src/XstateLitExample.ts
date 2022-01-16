@@ -58,26 +58,25 @@ export class XstateLitExample extends LitElement {
   }
 
   public storeUpdated() {
-    console.log('asdf')
     // console.table({state: this.store.state.value, ...this.store.state.context });
   }
 
   render() {
-    const { order } = this.store.state.context;
+    const { orderRef } = this.store.state.context;
     return html`
       <c-nav></c-nav>
       <div id="pages">
         <p-init class="${this.store.state.matches('init') ? 'active': ''}" ${animate(XstateLitExample.animateOptions)}></p-init>
         <p-default class="${this.store.state.matches('default') ? 'active': ''}" ${animate(XstateLitExample.animateOptions)}></p-default>
 
-        ${order ? html`
-          <p-order-color class="${order.state.matches('color') ? 'active': ''}" ${animate(XstateLitExample.animateOptions)}></p-order-color>
-          <p-order-frame class="${order.state.matches('frame') ? 'active': ''}" ${animate(XstateLitExample.animateOptions)}></p-order-frame>
-          <p-order-bake class="${order.state.matches('bake') ? 'active': ''}" ${animate(XstateLitExample.animateOptions)}></p-order-bake>
-          <p-order-seat class="${order.state.matches('seat') ? 'active': ''}" ${animate(XstateLitExample.animateOptions)}></p-order-seat>
-          <p-order-wheels class="${order.state.matches('wheels') ? 'active': ''}" ${animate(XstateLitExample.animateOptions)}></p-order-wheels>
-          <p-order-handles class="${order.state.matches('handles') ? 'active': ''}" ${animate(XstateLitExample.animateOptions)}></p-order-handles>
-          <p-order-shipit class="${order.state.matches('shipit') ? 'active': ''}" ${animate(XstateLitExample.animateOptions)}></p-order-shipit>
+        ${orderRef ? html`
+          <p-order-color class="${orderRef.state.matches('color') ? 'active': ''}" ${animate(XstateLitExample.animateOptions)}></p-order-color>
+          <p-order-frame class="${orderRef.state.matches('frame') ? 'active': ''}" ${animate(XstateLitExample.animateOptions)}></p-order-frame>
+          <p-order-bake class="${orderRef.state.matches('bake') ? 'active': ''}" ${animate(XstateLitExample.animateOptions)}></p-order-bake>
+          <p-order-seat class="${orderRef.state.matches('seat') ? 'active': ''}" ${animate(XstateLitExample.animateOptions)}></p-order-seat>
+          <p-order-wheels class="${orderRef.state.matches('wheels') ? 'active': ''}" ${animate(XstateLitExample.animateOptions)}></p-order-wheels>
+          <p-order-handles class="${orderRef.state.matches('handles') ? 'active': ''}" ${animate(XstateLitExample.animateOptions)}></p-order-handles>
+          <p-order-shipit class="${orderRef.state.matches('shipit') ? 'active': ''}" ${animate(XstateLitExample.animateOptions)}></p-order-shipit>
         ` : ''}
       </div>
     `;
