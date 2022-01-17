@@ -4,6 +4,7 @@ import html from '@web/rollup-plugin-html';
 import { importMetaAssets } from '@web/rollup-plugin-import-meta-assets';
 import { terser } from 'rollup-plugin-terser';
 import { generateSW } from 'rollup-plugin-workbox';
+import replace from '@rollup/plugin-replace';
 import path from 'path';
 
 export default {
@@ -30,6 +31,11 @@ export default {
     terser(),
     /** Bundle assets references via import.meta.url */
     importMetaAssets(),
+    /** Remove process.env from 3rd party libraries */
+    replace({
+      preventAssignment: true,
+      'process.env.NODE_ENV': JSON.stringify('production')
+    }),
     /** Compile JS to a lower language target */
     babel({
       babelHelpers: 'bundled',
