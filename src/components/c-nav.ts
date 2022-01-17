@@ -31,21 +31,15 @@ export class CNav extends StoreBase {
 		}
   `;
 
-	private order: OrderRef = null;
-
-	storeUpdated() {
-		if (this.store.state.context.orderRef) {
-			this.order = new StoreSubscriptionController(this, this.store.state.context.orderRef).store;
-		}
-	}
-
   render() {
     return html`
 			<div class="base" part="base">
 				<div id="title">${this.store.state.context.title}</div>
 				<div id="order-fulfilled">${this.renderOrdersFilled(this.store)} orders filled</div>
 				<div id="points">${this.store.state.context.points} points</div>
-				<div id="countdown">${this.order?.state.context.countdown} seconds</div>
+				${this.order ? html`
+					<div id="countdown">${this.order?.state.context.countdown} seconds</div>
+				` : ''}
 			</div>
     `;
   }

@@ -13,7 +13,7 @@ export class POrderBake extends StoreBase {
   render() {
     return html`
       <c-order-page>
-        <a href="#" @click=${() => this.store.send({ type: 'NEXT' })}>
+        <a href="#" @click=${() => this.order?.send({ type: 'NEXT' })}>
           <img src=${new URL('../../../assets/page-5.png', import.meta.url)}>
         </a>
       </c-order-page>

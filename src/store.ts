@@ -158,8 +158,19 @@ export class StoreSubscriptionController<T> implements ReactiveController {
  */
 export class StoreBase extends LitElement {
   protected store;
+	protected order: OrderRef = null;
+
   constructor() {
     super();
     this.store = new StoreController(this).store;
   }
+
+	storeUpdated() {
+		if (this.store.state.context.orderRef) {
+			this.order = new StoreSubscriptionController(this, this.store.state.context.orderRef).store;
+		}
+	}
 }
+
+// @ts-ignore
+window.BikeStore = store;

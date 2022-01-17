@@ -26,7 +26,7 @@ export class POrderFrame extends StoreBase {
   render() {
     return html`
       <c-order-page id="page">
-        <a href="#" @click=${() => this.store.send({ type: 'NEXT' })}>
+        <a href="#" @click=${() => this.order?.send({ type: 'NEXT' })}>
           <img src=${new URL('../../../assets/page-4.png', import.meta.url)}>
         </a>
         <c-sketch id="sketch"></c-sketch>

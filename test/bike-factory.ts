@@ -1,13 +1,13 @@
 import { html } from 'lit';
 import { fixture, expect } from '@open-wc/testing';
 
-import { XstateLitExample } from '../src/XstateLitExample.js';
-import '../src/xstate-lit-example.js';
+import { BikeFactory } from '../src/BikeFactory.js';
+import '../src/bike-factory.js';
 
-describe('XstateLitExample', () => {
-  let element: XstateLitExample;
+describe('BikeFactory', () => {
+  let element: BikeFactory;
   beforeEach(async () => {
-    element = await fixture(html`<xstate-lit-example></xstate-lit-example>`);
+    element = await fixture(html`<bike-factory></bike-factory>`);
   });
 
   it('renders a h1', () => {

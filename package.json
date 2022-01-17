@@ -1,8 +1,8 @@
 {
-  "name": "xstate-lit-example",
-  "description": "Webcomponent xstate-lit-example following open-wc recommendations",
+  "name": "bike-factory",
+  "description": "Webcomponent bike-factory following open-wc recommendations",
   "license": "MIT",
-  "author": "xstate-lit-example",
+  "author": "bike-factory",
   "version": "0.0.0",
   "scripts": {
     "lint": "eslint --ext .ts,.html . --ignore-path .gitignore && prettier \"**/*.ts\" --check --ignore-path .gitignore",
