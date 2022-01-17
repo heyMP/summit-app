@@ -1,6 +1,6 @@
 import { LitElement, html, css } from 'lit';
 import { property, state } from 'lit/decorators.js';
-import { StoreBase } from '../StoreBase.js';
+import { StoreBase } from '../store.js';
 import '../components/c-order-page.js';
 
 export class POrderWheels extends StoreBase {
@@ -13,7 +13,7 @@ export class POrderWheels extends StoreBase {
   render() {
     return html`
       <c-order-page>
-        <a href="#" @click=${() => this.store.send({ type: 'NEXT' })}>
+        <a href="#" @click=${() => this.order?.send({ type: 'NEXT' })}>
           <img src=${new URL('../../../assets/page-7.png', import.meta.url)}>
         </a>
       </c-order-page>

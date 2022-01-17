@@ -17,7 +17,7 @@ export class PDefault extends StoreBase {
   render() {
     return html`
       <c-page>
-        <a href="#" @click=${() => this.store.send({ type: 'FULFILL', orderId: 23 })}>
+        <a href="#" @click=${() => this.store.send({ type: 'FULFILL', orderId: 1 })}>
           <img src=${new URL('../../../assets/page-2.png', import.meta.url)}>
         </a>
       </c-page>
