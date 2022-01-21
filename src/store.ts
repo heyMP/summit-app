@@ -1,7 +1,7 @@
 import type { ReactiveController, ReactiveControllerHost } from 'lit';
 import { LitElement } from 'lit';
 import type { Interpreter, Subscription } from 'xstate';
-import { assign, createMachine, createSchema, interpret, spawn } from 'xstate';
+import { assign, createMachine, createSchema, interpret, spawn, send, sendParent } from 'xstate';
 import type { Order, OrderId } from './machines/orders.js';
 import { createOrderMachine } from './machines/orders.js';
 
@@ -50,6 +50,87 @@ export const storeMachine = createMachine({
 		orderId: null,
 		orders: [{ orderId: 1, countdown: 55 }],
 		orderRef: null,
+	},
+	invoke: {
+		id: 'websocket',
+		src: () => (send, receive) => {
+			let socket:WebSocket;
+			const retryDelay:number = 5000;
+			const maxTries:number = 50;
+			let retryTimeout:any;
+			let numRetries:number = 0;
+
+			const sendConfigurationFrame = () => {
+				if (!socket) {
+					return;
+				}
+
+				const message = {
+					type: "CONFIGURATION"
+				};
+
+				socket.send(JSON.stringify(message));
+			}
+
+			const connect = () => {
+				socket = new WebSocket("ws://localhost:8080");
+
+				socket.onopen = event => {
+					console.log("socket connected");
+					numRetries = 0;
+
+					if (retryTimeout) {
+						clearTimeout(retryTimeout);
+					}
+
+					sendConfigurationFrame();
+				};
+
+				socket.onmessage = event => {
+					const data = JSON.parse(event.data);
+					switch (data.type) {
+						case "PING":
+							console.log("ping");
+							break;
+					
+						case "CONFIGURATION":
+							console.log("CONFIGURATION", data)
+							sendParent(data);
+							break;
+						
+						default:
+							break;
+					}
+				};
+
+				socket.onclose = event => {
+					numRetries++;
+
+					if (numRetries === maxTries) {
+						// show some error message that the user should refresh the page
+						return;
+					}
+
+					retryTimeout = setTimeout(() => {
+						console.log(`socket reconnect try: ${numRetries}`);
+						connect();
+					}, retryDelay);
+				};
+
+				socket.onerror = error => {
+
+				};
+			}
+
+			connect();
+
+			return () => {
+				socket.close();
+				if (retryTimeout) {
+					clearTimeout(retryTimeout);
+				}
+			}
+		}
 	},
 	states: {
 		init: {
