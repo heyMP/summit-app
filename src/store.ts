@@ -4,11 +4,13 @@ import type { Interpreter, Subscription } from 'xstate';
 import { assign, createMachine, createSchema, interpret, spawn, send, sendParent } from 'xstate';
 import type { Order, OrderId } from './machines/orders.js';
 import { createOrderMachine } from './machines/orders.js';
+import { socketCallback } from './machines/socket.js';
+import type { ConfigurationEvent } from './machines/socket.js';
 
 export type OrderRef = Interpreter<Order> | null;
 
 export interface AppContext {
-	title: string;
+	name: string;
 	points: number;
 	// how many orders are fulfilled
 	fulfilled: number;
@@ -22,11 +24,13 @@ export interface AppContext {
 	orderId: OrderId;
 }
 
-export type AppEvent =
+/** @todo separate these events into their machine files and merge them here. */
+export type AppEvents =
   | { type: 'NEXT' }
   | { type: 'PREVIOUS' }
   | { type: 'FULFILL', orderId: OrderId }
   | { type: 'ORDER_COMPLETE' }
+	| ConfigurationEvent
 
 export type AppTypestate =
   | { value: 'init', context: AppContext }
@@ -40,10 +44,10 @@ export const storeMachine = createMachine({
 	initial: 'init',
 	schema: {
 		context: createSchema<AppContext>(),
-		events: createSchema<AppEvent>(),
+		events: createSchema<AppEvents>(),
 	},
 	context: {
-		title: 'Pasta Flower',
+		name: 'Pasta Flower',
 		points: 0,
 		fulfilled: 0,
 		backlog: 3,
@@ -53,84 +57,10 @@ export const storeMachine = createMachine({
 	},
 	invoke: {
 		id: 'websocket',
-		src: () => (send, receive) => {
-			let socket:WebSocket;
-			const retryDelay:number = 5000;
-			const maxTries:number = 50;
-			let retryTimeout:any;
-			let numRetries:number = 0;
-
-			const sendConfigurationFrame = () => {
-				if (!socket) {
-					return;
-				}
-
-				const message = {
-					type: "CONFIGURATION"
-				};
-
-				socket.send(JSON.stringify(message));
-			}
-
-			const connect = () => {
-				socket = new WebSocket("ws://localhost:8080");
-
-				socket.onopen = event => {
-					console.log("socket connected");
-					numRetries = 0;
-
-					if (retryTimeout) {
-						clearTimeout(retryTimeout);
-					}
-
-					sendConfigurationFrame();
-				};
-
-				socket.onmessage = event => {
-					const data = JSON.parse(event.data);
-					switch (data.type) {
-						case "PING":
-							console.log("ping");
-							break;
-					
-						case "CONFIGURATION":
-							console.log("CONFIGURATION", data)
-							sendParent(data);
-							break;
-						
-						default:
-							break;
-					}
-				};
-
-				socket.onclose = event => {
-					numRetries++;
-
-					if (numRetries === maxTries) {
-						// show some error message that the user should refresh the page
-						return;
-					}
-
-					retryTimeout = setTimeout(() => {
-						console.log(`socket reconnect try: ${numRetries}`);
-						connect();
-					}, retryDelay);
-				};
-
-				socket.onerror = error => {
-
-				};
-			}
-
-			connect();
-
-			return () => {
-				socket.close();
-				if (retryTimeout) {
-					clearTimeout(retryTimeout);
-				}
-			}
-		}
+		src: socketCallback,
+	},
+	on: {
+		CONFIGURATION: { actions: 'configuration' }
 	},
 	states: {
 		init: {
@@ -155,6 +85,14 @@ export const storeMachine = createMachine({
 }, {
 	// Actions (anything that directly mutates state)
 	actions: {
+		// @ts-ignore
+		configuration: assign((context, event) => {
+			if (event.type === 'CONFIGURATION') {
+				return {
+					name: event.player.username
+				}
+			}
+		}),
 		// @ts-ignore
 		fulfill: assign((context, event) => {
 			// this looks weird but it was the only way typescript would

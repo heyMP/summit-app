@@ -34,7 +34,7 @@ export class CNav extends StoreBase {
   render() {
     return html`
 			<div class="base" part="base">
-				<div id="title">${this.store.state.context.title}</div>
+				<div id="title">${this.store.state.context.name}</div>
 				<div id="order-fulfilled">${this.renderOrdersFilled(this.store)} orders filled</div>
 				<div id="points">${this.store.state.context.points} points</div>
 				${this.order ? html`
