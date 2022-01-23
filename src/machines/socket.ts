@@ -1,10 +1,11 @@
 import type { InvokeCreator } from 'xstate';
 import type { AppEvents, AppContext } from '../store.js';
+import { getLocalStorage } from '../store.js';
 
 export type ConfigurationEvent = {
 	type: 'CONFIGURATION',
 	game: {
-		id: number
+		id: string
 	},
 	player: {
 		userId: string,
@@ -22,13 +23,23 @@ export const socketCallback: InvokeCreator<AppContext, AppEvents> = (context, ev
 	let retryTimeout:any;
 	let numRetries:number = 0;
 
-	const sendConfigurationFrame = () => {
+	const sendConnectionFrame = () => {
 		if (!socket) {
 			return;
 		}
 
+		let data = {};
+
+		// get a previously connected player
+		const previousPlayer = getLocalStorage();
+		if (previousPlayer.game.id && previousPlayer.player.userId && previousPlayer.player.username) {
+			data = previousPlayer;
+		}
+
+		// send a "CONNECTION" frame
 		const message = {
-			type: "CONFIGURATION",
+			type: "CONNECTION",
+			data
 		};
 
 		socket.send(JSON.stringify(message));
@@ -45,7 +56,7 @@ export const socketCallback: InvokeCreator<AppContext, AppEvents> = (context, ev
 				clearTimeout(retryTimeout);
 			}
 
-			sendConfigurationFrame();
+			sendConnectionFrame();
 		};
 
 		socket.onmessage = event => {
