@@ -16,6 +16,9 @@ export class POrderShipit extends StoreBase {
         <a href="#" @click=${() => this.order?.send({ type: 'NEXT' })}>
           <img src=${new URL('../../../assets/page-9.png', import.meta.url)}>
         </a>
+        ${this.order?.state.matches('save') ? html`
+          <div>...Saving</div>
+        ` : ''}
       </c-order-page>
     `;
   }

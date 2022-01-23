@@ -13,7 +13,7 @@ export type OrderEvent =
   | { type: 'NEXT' }
   | { type: 'TICK' }
 
-export const createOrderMachine = (order: Order) => createMachine({
+export const orderMachine = createMachine({
 	id: 'order',
 	initial: 'color',
 	schema: {
@@ -21,12 +21,9 @@ export const createOrderMachine = (order: Order) => createMachine({
 		events: createSchema<OrderEvent>(),
 	},
 	context: {
-		// @ts-expect-error TS2783
 		orderId: null,
-		// @ts-expect-error TS2783
 		countdown: 55,
 		counterRef: null,
-		...order
 	},
 	// @ts-ignore
 	entry: assign({
@@ -70,7 +67,16 @@ export const createOrderMachine = (order: Order) => createMachine({
 		},
 		shipit: {
 			on: {
-				NEXT: { target: 'complete' }
+				NEXT: { target: 'save' }
+			}
+		},
+		save: {
+			invoke: {
+				id: 'saveOrder',
+				src: (context) => saveOrder(context),
+				onDone: {
+					target: 'complete'
+				}
 			}
 		},
 		complete: { type: 'final' }
@@ -93,3 +99,9 @@ const counterInterval = (callback: any, receive: any) => {
 
   return () => { clearInterval(intervalId); }
 }
+
+// Function that returns a promise
+// This promise might resolve with, e.g.,
+// { name: 'David', location: 'Florida' }
+// @ts-ignore
+const saveOrder = (order: Order) => new Promise(resolve => setTimeout(resolve, 3000));

@@ -3,7 +3,7 @@ import { LitElement } from 'lit';
 import type { Interpreter, Subscription } from 'xstate';
 import { assign, createMachine, createSchema, interpret, spawn, send, sendParent } from 'xstate';
 import type { Order, OrderId } from './machines/orders.js';
-import { createOrderMachine } from './machines/orders.js';
+import { orderMachine } from './machines/orders.js';
 import { socketCallback } from './machines/socket.js';
 import type { ConfigurationEvent } from './machines/socket.js';
 
@@ -80,6 +80,12 @@ export const storeMachine = createMachine({
 			}
 		},
 		order: {
+			invoke: {
+				id: 'order',
+				src: orderMachine,
+				data: (context, event) => context.orders.find(order => order?.orderId === context.orderId),
+				onDone: { target: 'default' }
+			},
 		}
 	},
 }, {
@@ -98,12 +104,8 @@ export const storeMachine = createMachine({
 			// this looks weird but it was the only way typescript would
 			// accept it.
 			if (event.type === 'FULFILL') {
-				const order = context.orders.find(order => order?.orderId === event.orderId);
-				if (order) {
-					return {
-						orderId: event.orderId,
-						orderRef: spawn(createOrderMachine(order))
-					}
+				return {
+					orderId: event.orderId
 				}
 			}
 			return {};
@@ -185,8 +187,8 @@ export class StoreBase extends LitElement {
   }
 
 	storeUpdated() {
-		if (this.store.state.context.orderRef) {
-			this.order = new StoreSubscriptionController(this, this.store.state.context.orderRef).store;
+		if (this.store.children.has('order')) {
+			this.order = new StoreSubscriptionController(this, this.store.children.get('order') as OrderRef).store;
 		}
 	}
 }

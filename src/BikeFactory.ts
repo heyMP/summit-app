@@ -66,6 +66,7 @@ export class BikeFactory extends StoreBase {
           <p-order-wheels class="${this.order.state.matches('wheels') ? 'active': ''}" ${animate(BikeFactory.animateOptions)}></p-order-wheels>
           <p-order-handles class="${this.order.state.matches('handles') ? 'active': ''}" ${animate(BikeFactory.animateOptions)}></p-order-handles>
           <p-order-shipit class="${this.order.state.matches('shipit') ? 'active': ''}" ${animate(BikeFactory.animateOptions)}></p-order-shipit>
+          <p-order-shipit class="${this.order.state.matches('save') ? 'active': ''}" ${animate(BikeFactory.animateOptions)}></p-order-shipit>
         ` : ''}
       </div>
     `;
