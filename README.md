@@ -28,3 +28,13 @@ npm init @open-wc
 For most of the tools, the configuration is in the `package.json` to reduce the amount of files in your project.
 
 If you customize the configuration a lot, you can consider moving them to individual files.
+
+## Starting the test web socket and admin controls
+```
+npm run start:socket
+```
+
+Run this command in another terminal window.This command starts two web sockets: 
+one for the client and one for the admin interface. This also starts an 
+additional web server that allows you to control the game state. Besure to look 
+at the terminal console to see which URL and PORT the admin interface launches on.

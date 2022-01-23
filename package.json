@@ -12,7 +12,7 @@
     "build": "rimraf dist && tsc && rollup -c rollup.config.js --environment NODE_ENV:production && npm run analyze -- --exclude dist",
     "start:build": "web-dev-server --root-dir dist --app-index index.html --open",
     "analyze": "cem analyze --litelement",
-    "start:socket": "node socket/server.js",
+    "start:socket": "concurrently \"node socket/server.js\" \"http-server socket\"",
     "start": "tsc && concurrently -k -r \"tsc --watch --preserveWatchOutput\" \"wds\""
   },
   "dependencies": {
@@ -40,6 +40,7 @@
     "deepmerge": "^4.2.2",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
+    "http-server": "^14.1.0",
     "husky": "^4.3.8",
     "lint-staged": "^10.5.4",
     "prettier": "^2.4.1",

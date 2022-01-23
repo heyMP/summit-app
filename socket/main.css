@@ -1,0 +1,25 @@
+#game-states-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 1rem;
+}
+
+#game-states-list button {
+  background-color: #efefef;
+  border: none;
+  padding: 1rem;
+  border-radius: 0.25rem;
+  text-transform: capitalize;
+  cursor: pointer;
+}
+
+#game-states-list button:hover {
+  background-color: #d4d4d4;
+}
+
+#game-states-list button[data-active="true"] {
+  background-color: royalblue;
+  color: white;
+}

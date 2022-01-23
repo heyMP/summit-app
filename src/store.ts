@@ -38,6 +38,24 @@ export type AppTypestate =
   | { value: 'fulfill', context: AppContext }
   | { value: 'order', context: AppContext }
 
+export const getLocalStorage = () => {
+	return {
+		game: {
+			id: localStorage.getItem("gameId")
+		},
+		player: {
+			userId: localStorage.getItem("playerId"),
+			username: localStorage.getItem("username")
+		}
+	};
+};
+	
+export const updateLocalStorage = (gameId: string, playerId: string, username: string) => {
+	localStorage.setItem("gameId", gameId);
+	localStorage.setItem("playerId", playerId);
+	localStorage.setItem("username", username);
+};
+
 // Edit your machine(s) here
 export const storeMachine = createMachine({
 	id: "app",
@@ -94,6 +112,9 @@ export const storeMachine = createMachine({
 		// @ts-ignore
 		configuration: assign((context, event) => {
 			if (event.type === 'CONFIGURATION') {
+				// updateLocalStorage
+				updateLocalStorage(event.game.id, event.player.userId, event.player.username);
+				
 				return {
 					name: event.player.username
 				}
