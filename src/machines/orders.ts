@@ -100,8 +100,5 @@ const counterInterval = (callback: any, receive: any) => {
   return () => { clearInterval(intervalId); }
 }
 
-// Function that returns a promise
-// This promise might resolve with, e.g.,
-// { name: 'David', location: 'Florida' }
 // @ts-ignore
 const saveOrder = (order: Order) => new Promise(resolve => setTimeout(resolve, 3000));
