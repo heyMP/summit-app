@@ -3,7 +3,7 @@ import { property, state } from 'lit/decorators.js';
 import { StoreBase } from '../store.js';
 import '../components/c-order-page.js';
 
-export class POrderShipit extends StoreBase {
+export class POrderShipping extends StoreBase {
   static styles = css`
     :host {
       display: block;
@@ -24,4 +24,4 @@ export class POrderShipit extends StoreBase {
   }
 }
 
-customElements.define('p-order-shipit', POrderShipit);
+customElements.define('p-order-shipping', POrderShipping);

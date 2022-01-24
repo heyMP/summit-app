@@ -1,12 +1,13 @@
 import { createMachine, send, assign, interpret, createSchema, sendParent, spawn } from 'xstate'
-import type { Interpreter, Subscription, StateMachine } from 'xstate';
+import type { Interpreter, Subscription, StateMachine, InvokeCreator } from 'xstate';
+import { counterInterval } from './counter.js';
 
 export type OrderId = string | number | null;
 
 export interface Order {
 	orderId: OrderId;
 	countdown: number;
-	counterRef?: any | null;
+	state: 'pending' | 'color' | 'frame' | 'bake' | 'seat' | 'wheels' | 'handles' | 'pedals' | 'shipping' | 'complete';
 }
 
 export type OrderEvent =
@@ -21,14 +22,14 @@ export const orderMachine = createMachine({
 		events: createSchema<OrderEvent>(),
 	},
 	context: {
+		// @ts-ignore
 		orderId: null,
 		countdown: 55,
-		counterRef: null,
+		state: 'pending',
 	},
-	// @ts-ignore
-	entry: assign({
-		counterRef: () => spawn(counterInterval)
-	}),
+	invoke: [
+		{ id: 'counterInterval', src: () => counterInterval },
+	],
 	on: {
 		'TICK': {
 			actions: 'decrementCount',
@@ -36,36 +37,43 @@ export const orderMachine = createMachine({
 	},
 	states: {
 		color: {
+			entry: assign(() => ({ state: 'color' })),
 			on: {
-				NEXT: { target: 'frame' }
+				NEXT: { target: 'frame',  }
 			}
 		},
 		frame: {
+			entry: assign(() => ({ state: 'color' })),
 			on: {
 				NEXT: { target: 'bake' }
 			}
 		},
 		bake: {
+			entry: assign(() => ({ state: 'bike' })),
 			on: {
 				NEXT: { target: 'seat' }
 			}
 		},
 		seat: {
+			entry: assign(() => ({ state: 'seat' })),
 			on: {
 				NEXT: { target: 'wheels' }
 			}
 		},
 		wheels: {
+			entry: assign(() => ({ state: 'wheels' })),
 			on: {
 				NEXT: { target: 'handles' }
 			}
 		},
 		handles: {
+			entry: assign(() => ({ state: 'handles' })),
 			on: {
-				NEXT: { target: 'shipit' }
+				NEXT: { target: 'shipping' }
 			}
 		},
-		shipit: {
+		shipping: {
+			entry: assign(() => ({ state: 'shipping' })),
 			on: {
 				NEXT: { target: 'save' }
 			}
@@ -73,32 +81,29 @@ export const orderMachine = createMachine({
 		save: {
 			invoke: {
 				id: 'saveOrder',
-				src: (context) => saveOrder(context),
+				src: (context) => saveOrder(context as Order),
 				onDone: {
-					target: 'complete'
+					target: 'complete',
 				}
 			}
 		},
-		complete: { type: 'final' }
+		complete: {
+			entry: assign(() => ({ state: 'complete' })),
+			type: 'final'
+		}
 	}
 }, {
 	actions: {
 		// @ts-ignore
 		decrementCount: assign((context, event) => {
 			return {
+				// @ts-ignore
 				countdown: context.countdown - 1
 			}
 		}),
 	}
 });
 
-const counterInterval = (callback: any, receive: any) => {
-  const intervalId = setInterval(() => {
-    callback({ type: 'TICK' });
-  }, 1000);
-
-  return () => { clearInterval(intervalId); }
-}
 
 // @ts-ignore
 const saveOrder = (order: Order) => new Promise(resolve => setTimeout(resolve, 3000));

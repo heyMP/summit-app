@@ -13,7 +13,7 @@ import './pages/p-order-bake.js';
 import './pages/p-order-seat.js';
 import './pages/p-order-wheels.js';
 import './pages/p-order-handles.js';
-import './pages/p-order-shipit.js';
+import './pages/p-order-shipping.js';
 
 export class BikeFactory extends StoreBase {
   static styles = css`
@@ -65,8 +65,8 @@ export class BikeFactory extends StoreBase {
           <p-order-seat class="${this.order.state.matches('seat') ? 'active': ''}" ${animate(BikeFactory.animateOptions)}></p-order-seat>
           <p-order-wheels class="${this.order.state.matches('wheels') ? 'active': ''}" ${animate(BikeFactory.animateOptions)}></p-order-wheels>
           <p-order-handles class="${this.order.state.matches('handles') ? 'active': ''}" ${animate(BikeFactory.animateOptions)}></p-order-handles>
-          <p-order-shipit class="${this.order.state.matches('shipit') ? 'active': ''}" ${animate(BikeFactory.animateOptions)}></p-order-shipit>
-          <p-order-shipit class="${this.order.state.matches('save') ? 'active': ''}" ${animate(BikeFactory.animateOptions)}></p-order-shipit>
+          <p-order-shipping class="${this.order.state.matches('shipping') ? 'active': ''}" ${animate(BikeFactory.animateOptions)}></p-order-shipping>
+          <p-order-shipping class="${this.order.state.matches('save') ? 'active': ''}" ${animate(BikeFactory.animateOptions)}></p-order-shipping>
         ` : ''}
       </div>
     `;

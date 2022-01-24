@@ -70,7 +70,7 @@ export const storeMachine = createMachine({
 		fulfilled: 0,
 		backlog: 3,
 		orderId: null,
-		orders: [{ orderId: 1, countdown: 55 }],
+		orders: [{ orderId: 1, countdown: 55, state: 'pending' }],
 		orderRef: null,
 	},
 	invoke: {
@@ -114,7 +114,7 @@ export const storeMachine = createMachine({
 			if (event.type === 'CONFIGURATION') {
 				// updateLocalStorage
 				updateLocalStorage(event.game.id, event.player.userId, event.player.username);
-				
+
 				return {
 					name: event.player.username
 				}
@@ -210,6 +210,9 @@ export class StoreBase extends LitElement {
 	storeUpdated() {
 		if (this.store.children.has('order')) {
 			this.order = new StoreSubscriptionController(this, this.store.children.get('order') as OrderRef).store;
+		}
+		else {
+			this.order = null;
 		}
 	}
 }
