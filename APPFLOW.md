@@ -1,5 +1,13 @@
 # Application Flow
 
+## Application loading
+For "in audience" users, the user will scan the QR code on the microcontroller. 
+The QR code will take them to our web application where we will grab the UUID
+of the microcontroller from the URL. We will store this in memory and in
+`localStorage` in case of a browser refresh.
+
+For "at home" users... (NEED TO WORK THIS OUT)
+
 ## Connection
 When the application first loads in the browser, we establish a connection
 to the web socket. When the `onopen` callback for the web socket fires,
@@ -21,8 +29,11 @@ storage.
       id: string
     },
     player: {
-      userId: string,
+      userid: string,
       username: string
+    },
+    microcontroller: {
+      uuid: string
     }
   }
 }
@@ -33,7 +44,11 @@ frame that looks like this.
 ```
 {
   type: "CONNECTION,
-  data: {}
+  data: {
+    microcontroller: {
+      uuid: string
+    }
+  }
 }
 ```
 
@@ -45,45 +60,55 @@ information about the game and the player.
 {
   type: "CONFIGURATION",
   player: {
-    userId: string,
+    userid: string,
     username: string
   },
   game: {
     id: string,
     state: string
+  },
+  microcontroller: {
+    uuid: string
   }
 }
 ```
 
 ## Device pairing
-A user scans a QR code on the microcontroller. The QR code takes the user to
-the mobile web application. The link in the QR code contains the UUID for
-the microcontroller. We grab the UUID from the URL and send a message to the
-backend over the web socket with the UUID from the microcontroller and the
-player UUID.
+Once we have the player established, we'll begin the pairing process with
+the microcontroller. We'll send a `PAIRING` frame to the backend with
+the UUID of the microcontroller and the player's userid.
 
 ```
 {
   type: "PAIRING",
   data: {
-    deviceuuid: string,
-    playeruuid: string
+    microcontroller: {
+      uuid: string
+    },
+    player: {
+      userid: string
+    }
   }
 }
 ```
 
 Once the backend receives this message, the backend then sends a pairing
-frame to the bluetooth gateway to then relay the message to the microcontroller.
+frame to the bluetooth gateway which relays the message to the microcontroller.
 When the microcontroller receives the message, the LEDs on the microcontroller
-start to blick indicating a completed pairing. The microcontroller then sends
+start to blink indicating a completed pairing. The microcontroller then sends
 a `PAIRING_COMPLETE` frame to the bluetooth gateway then to the backend and the
 socket sends the `PAIRING_COMPLETE` frame to the mobile web application.
 
 ```
 {
-  type: "PAIRING_COMPLETE"
+  type: "PAIRING_COMPLETE",
+  microcontroller: {
+    uuid: string
+  }
 }
 ```
+
+At this moment, the microcontroller and the web application should be paired.
 
 ## GAME_STATE Frame
 From the admin interface, a `GAME_STATE_CHANGE` frame is sent to the socket
