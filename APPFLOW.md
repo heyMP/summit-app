@@ -1,5 +1,35 @@
 # Application Flow
 
+## Device pairing
+A user scans a QR code on the microcontroller. The QR code takes the user to
+the mobile web application. The link in the QR code contains the UUID for
+the microcontroller. We grab the UUID from the URL and send a message to the
+backend over the web socket with the UUID from the microcontroller and the
+player UUID.
+
+```
+{
+  type: "PAIRING",
+  data: {
+    deviceuuid: string,
+    playeruuid: string
+  }
+}
+```
+
+Once the backend receives this message, the backend then sends a pairing
+frame to the bluetooth gateway to then relay the message to the microcontroller.
+When the microcontroller receives the message, the LEDs on the microcontroller
+start to blick indicating a completed pairing. The microcontroller then sends
+a `PAIRING_COMPLETE` frame to the bluetooth gateway then to the backend and the
+socket sends the `PAIRING_COMPLETE` frame to the mobile web application.
+
+```
+{
+  type: "PAIRING_COMPLETE"
+}
+```
+
 ## Connection
 When the application first loads in the browser, we establish a connection
 to the web socket. When the `onopen` callback for the web socket fires,
