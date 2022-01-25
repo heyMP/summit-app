@@ -8,7 +8,7 @@ export type ConfigurationEvent = {
 		id: string
 	},
 	player: {
-		userId: string,
+		userid: string,
 		username: string
 	}
 }
@@ -32,7 +32,7 @@ export const socketCallback: InvokeCreator<AppContext, AppEvents> = (context, ev
 
 		// get a previously connected player
 		const previousPlayer = getLocalStorage();
-		if (previousPlayer.game.id && previousPlayer.player.userId && previousPlayer.player.username) {
+		if (previousPlayer.game.id && previousPlayer.player.userid && previousPlayer.player.username) {
 			data = previousPlayer;
 		}
 

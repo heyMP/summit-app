@@ -44,7 +44,7 @@ export const getLocalStorage = () => {
 			id: localStorage.getItem("gameId")
 		},
 		player: {
-			userId: localStorage.getItem("playerId"),
+			userid: localStorage.getItem("playerId"),
 			username: localStorage.getItem("username")
 		}
 	};
@@ -113,7 +113,7 @@ export const storeMachine = createMachine({
 		configuration: assign((context, event) => {
 			if (event.type === 'CONFIGURATION') {
 				// updateLocalStorage
-				updateLocalStorage(event.game.id, event.player.userId, event.player.username);
+				updateLocalStorage(event.game.id, event.player.userid, event.player.username);
 
 				return {
 					name: event.player.username
