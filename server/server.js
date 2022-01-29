@@ -21,7 +21,7 @@ const setCurrentGameState = state => {
   }
 
   currentGameState = gameStates[state];
-  
+
   const data = JSON.stringify({
     type: "GAME_STATE",
     game: {
