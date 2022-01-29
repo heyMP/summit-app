@@ -4,6 +4,9 @@
   "license": "MIT",
   "author": "bike-factory",
   "version": "0.0.0",
+  "engines": {
+    "node": ">=14 <=17"
+  },
   "scripts": {
     "lint": "eslint --ext .ts,.html . --ignore-path .gitignore && prettier \"**/*.ts\" --check --ignore-path .gitignore",
     "format": "eslint --ext .ts,.html . --fix --ignore-path .gitignore && prettier \"**/*.ts\" --write --ignore-path .gitignore",
