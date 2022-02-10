@@ -49,7 +49,7 @@ export const orderMachine = createMachine({
 			}
 		},
 		bake: {
-			entry: assign(() => ({ state: 'bike' })),
+			entry: assign(() => ({ state: 'bake' })),
 			on: {
 				NEXT: { target: 'seat' }
 			}
