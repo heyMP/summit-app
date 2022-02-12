@@ -1,17 +1,17 @@
 import { LitElement, html, css } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { StoreBase } from '../store.js';
-import '../components/c-page.js';
-import '../components/c-button.js';
+import '../elements/e-page.js';
+import '../elements/e-button.js';
 
 export class POrderBake extends StoreBase {
   render() {
     return html`
-      <c-page>
+      <e-page>
         <h1 slot="header">Bake your bike frame</h1>
         <img src=${new URL('../../../assets/page-5.png', import.meta.url)}>
-        <c-button @click=${() => this.order?.send({ type: 'NEXT' })}>Next</c-button>
-      </c-page>
+        <e-button @click=${() => this.order?.send({ type: 'NEXT' })}>Next</e-button>
+      </e-page>
     `;
   }
 }

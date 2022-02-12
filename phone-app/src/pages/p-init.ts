@@ -1,13 +1,13 @@
 import { LitElement, html, css } from 'lit';
 import { property, state } from 'lit/decorators.js';
-import '../components/c-page.js';
+import '../elements/e-page.js';
 
 export class PInit extends LitElement {
   render() {
     return html`
-      <c-page>
+      <e-page>
         <img src=${new URL('../../../assets/logo.png', import.meta.url)}>
-      </c-page>
+      </e-page>
     `;
   }
 }

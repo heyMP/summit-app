@@ -1,8 +1,8 @@
 import { LitElement, html, css } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { StoreBase } from '../store.js';
-import '../components/c-page.js';
-import '../components/c-button.js';
+import '../elements/e-page.js';
+import '../elements/e-button.js';
 
 export class PDefault extends StoreBase {
   static styles = [...super.styles, css`
@@ -17,11 +17,11 @@ export class PDefault extends StoreBase {
 
   render() {
     return html`
-      <c-page>
+      <e-page>
         <h1 slot="header">Fulfill an order</h1>
         <img src=${new URL('../../../assets/page-2.png', import.meta.url)}>
-        <c-button @click=${() => this.store.send({ type: 'FULFILL', orderId: 1 })}>Select</c-button>
-      </c-page>
+        <e-button @click=${() => this.store.send({ type: 'FULFILL', orderId: 1 })}>Select</e-button>
+      </e-page>
     `;
   }
 }

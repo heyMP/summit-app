@@ -1,11 +1,11 @@
-import { css, html } from 'lit';
+import { css, html, LitElement } from 'lit';
 import { property } from 'lit/decorators.js';
+import styles from '../global.css.js';
 import { variable } from '../globals.js';
 import { StoreBase, StoreSubscriptionController } from '../store.js';
-import type { Store, OrderRef } from '../store.js';
 
-export class CButton extends StoreBase {
-  static styles = [...super.styles, css`
+export class EButton extends LitElement {
+  static styles = [styles, css`
 		:host {
 			display: inline-block;
 		}
@@ -26,4 +26,4 @@ export class CButton extends StoreBase {
   }
 }
 
-customElements.define('c-button', CButton);
+customElements.define('e-button', EButton);

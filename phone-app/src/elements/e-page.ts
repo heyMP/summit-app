@@ -2,9 +2,10 @@ import { LitElement, html, css } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { StoreBase } from '../store.js';
 import { variable } from '../globals.js';
+import styles from '../global.css.js';
 
-export class CPage extends StoreBase {
-  static styles = [...super.styles, css`
+export class EPage extends StoreBase {
+  static styles = [styles, css`
     :host {
       display: flex;
       min-height: calc(100vh - calc(${variable('navHeight')} * 2));
@@ -42,4 +43,4 @@ export class CPage extends StoreBase {
   }
 }
 
-customElements.define('e-page', CPage);
+customElements.define('e-page', EPage);

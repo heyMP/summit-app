@@ -11,37 +11,42 @@
     html,
     body {
       font-size: 1rem;
-      margin: 1em;
-
+      margin: 0em;
+      padding: 0em;
     }
-    bike-factory {
-      text-align: center;
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+    section {
+      margin: 5rem;
+      max-width: 600px;
     }
   </style>
   <title>bike-factory</title>
 </head>
 
 <body>
-  <h1>Components</h1>
+  <h1>Elements</h1>
+  <p>This page is a collection of stateless components (elements) that are used throughout the application.</p>
 
   <section>
-    <h2>c-button</h2>
-    <c-button>Start</c-button>
-    <c-button disabled>...Saving</c-button>
+    <h2>e-button</h2>
+    <e-button>Start</e-button>
+    <e-button disabled>...Saving</e-button>
   </section>
 
   <section>
-    <c-page>
+    <h2>e-page</h2>
+    <p>This element has three slots: 'header', 'footer' or default.</p>
+    <e-page>
       <h1 slot="header">Example title</h1>
-      <p>Aliquip ea id aliquip esse qui veniam esse. Ipsum aliqua veniam cupidatat dolore minim aute eiusmod fugiat ad culpa. Voluptate non sunt nostrud nostrud officia consequat laborum occaecat. Voluptate quis magna occaecat deserunt esse id. Fugiat sint minim aliqua ex incididunt cupidatat qui anim mollit consectetur voluptate. Proident ullamco ad exercitation tempor enim incididunt.</p>
-      <p>Aliquip ea id aliquip esse qui veniam esse. Ipsum aliqua veniam cupidatat dolore minim aute eiusmod fugiat ad culpa. Voluptate non sunt nostrud nostrud officia consequat laborum occaecat. Voluptate quis magna occaecat deserunt esse id. Fugiat sint minim aliqua ex incididunt cupidatat qui anim mollit consectetur voluptate. Proident ullamco ad exercitation tempor enim incididunt.</p>
-      <p>Aliquip ea id aliquip esse qui veniam esse. Ipsum aliqua veniam cupidatat dolore minim aute eiusmod fugiat ad culpa. Voluptate non sunt nostrud nostrud officia consequat laborum occaecat. Voluptate quis magna occaecat deserunt esse id. Fugiat sint minim aliqua ex incididunt cupidatat qui anim mollit consectetur voluptate. Proident ullamco ad exercitation tempor enim incididunt.</p>
+      <img src="https://via.placeholder.com/350?text=Bike+Factory"/>
       <p slot="footer">Footer content</p>
-    </c-page>
+    </e-page>
   </section>
 
-  <script type="module" src="./out-tsc/src/components/c-page.js"></script>
-  <script type="module" src="./out-tsc/src/components/c-button.js"></script>
+  <script type="module" src="./out-tsc/src/elements/e-page.js"></script>
+  <script type="module" src="./out-tsc/src/elements/e-button.js"></script>
 </body>
 
 </html>
