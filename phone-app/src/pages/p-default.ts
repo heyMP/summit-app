@@ -2,9 +2,10 @@ import { LitElement, html, css } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { StoreBase } from '../store.js';
 import '../components/c-page.js';
+import '../components/c-button.js';
 
 export class PDefault extends StoreBase {
-  static styles = css`
+  static styles = [...super.styles, css`
     :host {
       display: block;
     }
@@ -12,14 +13,13 @@ export class PDefault extends StoreBase {
     img {
       display: block;
     }
-  `;
+  `];
 
   render() {
     return html`
       <c-page>
-        <a href="#" @click=${() => this.store.send({ type: 'FULFILL', orderId: 1 })}>
-          <img src=${new URL('../../../assets/page-2.png', import.meta.url)}>
-        </a>
+        <img src=${new URL('../../../assets/page-2.png', import.meta.url)}>
+        <c-button @click=${() => this.store.send({ type: 'FULFILL', orderId: 1 })}>Select</c-button>
       </c-page>
     `;
   }

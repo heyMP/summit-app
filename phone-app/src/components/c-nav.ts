@@ -4,7 +4,7 @@ import { StoreBase, StoreSubscriptionController } from '../store.js';
 import type { Store, OrderRef } from '../store.js';
 
 export class CNav extends StoreBase {
-  static styles = css`
+  static styles = [...super.styles, css`
     :host {
 			height: ${variable('navHeight')};
 			display: block;
@@ -29,7 +29,7 @@ export class CNav extends StoreBase {
 			width: 100%;
 			max-width: 400px;
 		}
-  `;
+  `];
 
   render() {
     return html`

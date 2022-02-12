@@ -6,9 +6,10 @@ import { terser } from 'rollup-plugin-terser';
 import { generateSW } from 'rollup-plugin-workbox';
 import replace from '@rollup/plugin-replace';
 import path from 'path';
+import litcss from 'rollup-plugin-lit-css';
 
 export default {
-  input: 'index.html',
+  input: '*.html',
   output: {
     entryFileNames: '[hash].js',
     chunkFileNames: '[hash].js',
@@ -19,6 +20,8 @@ export default {
   preserveEntrySignatures: false,
 
   plugins: [
+    /** Import css files in JS */
+    litcss(),
     /** Enable using HTML as rollup entrypoint */
     html({
       minify: true,

@@ -3,16 +3,6 @@ import { property, state } from 'lit/decorators.js';
 import '../components/c-page.js';
 
 export class PInit extends LitElement {
-  static styles = css`
-    :host {
-      display: block;
-    }
-  `;
-
-  constructor() {
-    super();
-  }
-
   render() {
     return html`
       <c-page>

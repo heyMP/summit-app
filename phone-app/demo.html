@@ -10,14 +10,9 @@
   <style>
     html,
     body {
-      margin: 0;
-      padding: 0;
-      font-family: sans-serif;
-      display: flex;
-      min-height: 100vh;
-      justify-content: center;
-      align-items: center;
-      gap: 1em;
+      font-size: 1rem;
+      margin: 1em;
+
     }
     bike-factory {
       text-align: center;
@@ -27,8 +22,14 @@
 </head>
 
 <body>
-  <bike-factory></bike-factory>
-  <script type="module" src="./out-tsc/src/bike-factory.js"></script>
+  <h1>Components</h1>
+
+  <h3>c-button</h3>
+  <c-button>Start</c-button>
+  <br>
+  <c-button disabled>...Saving</c-button>
+
+  <script type="module" src="./out-tsc/src/components/c-button.js"></script>
 </body>
 
 </html>

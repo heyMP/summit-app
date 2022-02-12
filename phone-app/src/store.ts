@@ -6,6 +6,7 @@ import type { Order, OrderId } from './machines/orders.js';
 import { orderMachine } from './machines/orders.js';
 import { socketCallback } from './machines/socket.js';
 import type { ConfigurationEvent } from './machines/socket.js';
+import styles from './global.css.js';
 
 export type OrderRef = Interpreter<Order> | null;
 
@@ -201,6 +202,8 @@ export class StoreSubscriptionController<T> implements ReactiveController {
 export class StoreBase extends LitElement {
   protected store;
 	protected order: OrderRef = null;
+
+	static styles = [styles];
 
   constructor() {
     super();

@@ -16,7 +16,7 @@ import './pages/p-order-handles.js';
 import './pages/p-order-shipping.js';
 
 export class BikeFactory extends StoreBase {
-  static styles = css`
+  static styles = [...super.styles, css`
     :host {
       display: block;
       position: relative;
@@ -49,7 +49,7 @@ export class BikeFactory extends StoreBase {
       opacity: 1;
       pointer-events: all;
     }
-  `;
+  `];
 
   render() {
     return html`

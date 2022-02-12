@@ -4,12 +4,6 @@ import { StoreBase } from '../store.js';
 import { variable } from '../globals.js';
 
 export class COrderNav extends StoreBase {
-  static styles = css`
-    :host {
-			display: block;
-    }
-  `;
-
   render() {
     return html`
 			<div class="base" part="base">

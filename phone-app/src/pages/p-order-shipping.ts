@@ -4,21 +4,14 @@ import { StoreBase } from '../store.js';
 import '../components/c-order-page.js';
 
 export class POrderShipping extends StoreBase {
-  static styles = css`
-    :host {
-      display: block;
-    }
-  `;
-
   render() {
+    const isSaving = this.order?.state.matches('save');
     return html`
       <c-order-page>
-        <a href="#" @click=${() => this.order?.send({ type: 'NEXT' })}>
-          <img src=${new URL('../../../assets/page-9.png', import.meta.url)}>
-        </a>
-        ${this.order?.state.matches('save') ? html`
-          <div>...Saving</div>
-        ` : ''}
+        <img src=${new URL('../../../assets/page-9.png', import.meta.url)}>
+        <c-button .disabled=${isSaving} @click=${() => this.order?.send({ type: 'NEXT' })}>
+          ${isSaving ? html` ...Saving ` : html` Ship it!  `}
+        </c-button>
       </c-order-page>
     `;
   }
