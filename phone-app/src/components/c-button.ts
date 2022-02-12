@@ -6,6 +6,10 @@ import type { Store, OrderRef } from '../store.js';
 
 export class CButton extends StoreBase {
   static styles = [...super.styles, css`
+		:host {
+			display: inline-block;
+		}
+
 		button {
 			font-size: 1.2rem;
 		}

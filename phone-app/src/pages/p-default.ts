@@ -18,6 +18,7 @@ export class PDefault extends StoreBase {
   render() {
     return html`
       <c-page>
+        <h1 slot="header">Fulfill an order</h1>
         <img src=${new URL('../../../assets/page-2.png', import.meta.url)}>
         <c-button @click=${() => this.store.send({ type: 'FULFILL', orderId: 1 })}>Select</c-button>
       </c-page>

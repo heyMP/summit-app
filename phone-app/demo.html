@@ -24,11 +24,23 @@
 <body>
   <h1>Components</h1>
 
-  <h3>c-button</h3>
-  <c-button>Start</c-button>
-  <br>
-  <c-button disabled>...Saving</c-button>
+  <section>
+    <h2>c-button</h2>
+    <c-button>Start</c-button>
+    <c-button disabled>...Saving</c-button>
+  </section>
 
+  <section>
+    <c-page>
+      <h1 slot="header">Example title</h1>
+      <p>Aliquip ea id aliquip esse qui veniam esse. Ipsum aliqua veniam cupidatat dolore minim aute eiusmod fugiat ad culpa. Voluptate non sunt nostrud nostrud officia consequat laborum occaecat. Voluptate quis magna occaecat deserunt esse id. Fugiat sint minim aliqua ex incididunt cupidatat qui anim mollit consectetur voluptate. Proident ullamco ad exercitation tempor enim incididunt.</p>
+      <p>Aliquip ea id aliquip esse qui veniam esse. Ipsum aliqua veniam cupidatat dolore minim aute eiusmod fugiat ad culpa. Voluptate non sunt nostrud nostrud officia consequat laborum occaecat. Voluptate quis magna occaecat deserunt esse id. Fugiat sint minim aliqua ex incididunt cupidatat qui anim mollit consectetur voluptate. Proident ullamco ad exercitation tempor enim incididunt.</p>
+      <p>Aliquip ea id aliquip esse qui veniam esse. Ipsum aliqua veniam cupidatat dolore minim aute eiusmod fugiat ad culpa. Voluptate non sunt nostrud nostrud officia consequat laborum occaecat. Voluptate quis magna occaecat deserunt esse id. Fugiat sint minim aliqua ex incididunt cupidatat qui anim mollit consectetur voluptate. Proident ullamco ad exercitation tempor enim incididunt.</p>
+      <p slot="footer">Footer content</p>
+    </c-page>
+  </section>
+
+  <script type="module" src="./out-tsc/src/components/c-page.js"></script>
   <script type="module" src="./out-tsc/src/components/c-button.js"></script>
 </body>
 

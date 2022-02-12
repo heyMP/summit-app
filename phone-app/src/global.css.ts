@@ -8,4 +8,8 @@ export default css`
 	*, *::before, *::after {
 		box-sizing: border-box;
 	}
+
+	img {
+		display: block;
+	}
 `;
