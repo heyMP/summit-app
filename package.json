@@ -4,7 +4,8 @@
   "description": "Phone app ``` npm install cd phone-app npm run start ```",
   "main": "index.js",
   "scripts": {
-    "start": "concurrently \"cd phone-app && npm run start\" \"cd admin-app && http-server .\" \"cd admin-app && http-server -o .\" \"cd server && npm run start\"",
+    "start": "concurrently \"cd phone-app && npm run start\" \"cd admin-app && http-server -o .\"",
+    "start:socket": "cd server && npm run start",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

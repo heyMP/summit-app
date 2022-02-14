@@ -9,7 +9,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-	"dependencies": {
-		"wss": "^3.3.4"
-	}
+  "dependencies": {
+    "wss": "^3.3.4"
+  }
 }

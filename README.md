@@ -10,9 +10,14 @@ npm install
 
 ## Start
 
-Use concurently to start phone-app, admin-app, and socket server. The phone-app and admin-app
+Use concurently to start phone-app, and admin-app. The phone-app and admin-app
 will automatically open in the browser.
 
 ```
-npm run
+npm start
+```
+
+To get the socket server running
+```
+npm run start:socket
 ```

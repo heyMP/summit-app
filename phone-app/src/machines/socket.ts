@@ -13,6 +13,14 @@ export type ConfigurationEvent = {
 	}
 }
 
+export type PairingEvent = {
+	type: "PAIRING",
+}
+
+export type PairedEvent = {
+	type: "PAIRED",
+}
+
 /**
  * XState Invoke Callback
  */
@@ -22,6 +30,24 @@ export const socketCallback: InvokeCreator<AppContext, AppEvents> = (context, ev
 	const maxTries:number = 50;
 	let retryTimeout:any;
 	let numRetries:number = 0;
+
+	/*
+	 * if we have a uuid in the query string of the url,
+	 * read it and begin the pairing process.
+	 */
+	const sendPairingFrame = (data: any) => {
+		if (!socket) {
+			return;
+		}
+
+		// send a "PAIRING" frame
+		const message = {
+			type: "PAIRING",
+			data,
+		};
+
+		socket.send(JSON.stringify(message));
+	};
 
 	const sendConnectionFrame = () => {
 		if (!socket) {
@@ -68,6 +94,38 @@ export const socketCallback: InvokeCreator<AppContext, AppEvents> = (context, ev
 
 				case "CONFIGURATION":
 					send(data as ConfigurationEvent);
+
+					const searchParams = new URLSearchParams(window.location.search);
+
+					if (searchParams.has("uuid")) {
+						const pairingData = {
+							type: "PAIRING",
+							player: data.player,
+							microcontrollerUUID: searchParams.get("uuid")
+						};
+	
+						send(pairingData as PairingEvent);
+						
+						sendPairingFrame({
+							player: {
+								uuid: data.player.userId
+							},
+							microcontroller: {
+								uuid: searchParams.get("uuid")
+							}
+						});
+					}
+
+					break;
+
+				case "PAIRING_COMPLETE":
+					const pairedData = {
+						type: "PAIRED",
+						microcontroller: {
+							uuid: data.data.microcontroller.uuid
+						}
+					};
+					send(pairedData as PairedEvent);
 					break;
 
 				default:

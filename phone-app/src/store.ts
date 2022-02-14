@@ -5,7 +5,7 @@ import { assign, createMachine, createSchema, interpret, spawn, send, sendParent
 import type { Order, OrderId } from './machines/orders.js';
 import { orderMachine } from './machines/orders.js';
 import { socketCallback } from './machines/socket.js';
-import type { ConfigurationEvent } from './machines/socket.js';
+import type { ConfigurationEvent, PairingEvent, PairedEvent } from './machines/socket.js';
 import styles from './global.css.js';
 
 export type OrderRef = Interpreter<Order> | null;
@@ -32,6 +32,8 @@ export type AppEvents =
   | { type: 'FULFILL', orderId: OrderId }
   | { type: 'ORDER_COMPLETE' }
 	| ConfigurationEvent
+  | PairingEvent
+	| PairedEvent
 
 export type AppTypestate =
   | { value: 'init', context: AppContext }
@@ -79,18 +81,20 @@ export const storeMachine = createMachine({
 		src: socketCallback,
 	},
 	on: {
-		CONFIGURATION: { actions: 'configuration' }
+		CONFIGURATION: { actions: 'configuration' },
+		PAIRING: { actions: 'pairing' },
+		PAIRED: { actions: 'paired' },
 	},
 	states: {
 		init: {
 			on: {
 				NEXT: { target: 'default' }
 			},
-			after: {
-        2000: {
-          target: 'default'
-        }
-      },
+			// after: {
+      //   2000: {
+      //     target: 'default'
+      //   }
+      // },
 		},
 		default: {
 			on: {
@@ -115,10 +119,29 @@ export const storeMachine = createMachine({
 			if (event.type === 'CONFIGURATION') {
 				// updateLocalStorage
 				updateLocalStorage(event.game.id, event.player.userid, event.player.username);
+				console.log("player configuration complete");
 
 				return {
 					name: event.player.username
 				}
+			}
+		}),
+		// @ts-ignore
+		pairing: assign((context, event) => {
+			if (event.type === 'PAIRING') {
+				console.log("pairing action");
+				
+				// begin pairing process with microcontroller
+				console.log("begin pairing process with microcontroller");
+				console.log(event);
+				return {};
+			}
+		}),
+		// @ts-ignore
+		paired: assign((context, event) => {
+			if (event.type === 'PAIRED') {
+				console.log("paired with microcontroller");
+				return {};
 			}
 		}),
 		// @ts-ignore

@@ -1,13 +1,19 @@
 const gameStatesList = document.querySelector("#game-states-list");
 const gameStateListItemTpl = document.querySelector("#game-state-list-item");
-let socket;
+const microcontrollerUUID = "abcd-1234-efgh-5678";
+const microcontroller = document.querySelector("#microcontroller");
+const microcontrollerLEDs = document.querySelector("#leds");
+const microcontrollerBtnLeft = document.querySelector("#microcontroller-btn-left");
+const microcontrollerBtnRight = document.querySelector("#microcontroller-btn-right");
+let adminSocket;
+let microcontrollerSocket;
 
 const gameStateBtnClickHandler = event => {
-  if (!socket) {
+  if (!adminSocket) {
     return;
   }
 
-  socket.send(JSON.stringify({
+  adminSocket.send(JSON.stringify({
     type: "GAME_STATE_CHANGE",
     state: event.target.dataset.state
   }));
@@ -42,19 +48,19 @@ const setActiveGameState = gameState => {
 };
 
 const connect = () => {
-  socket = new WebSocket("ws://localhost:8081/");
-  socket.onopen = () => {
+  adminSocket = new WebSocket("ws://localhost:8081/");
+  adminSocket.onopen = () => {
     console.log("admin socket open");
-    socket.send(JSON.stringify({
+    adminSocket.send(JSON.stringify({
       type: "CONNECTION"
     }));
   };
 
-  socket.onclose = event => {
+  adminSocket.onclose = event => {
     console.warn(event);
   };
 
-  socket.onmessage = event => {
+  adminSocket.onmessage = event => {
     const data = JSON.parse(event.data);
 
     switch (data.type) {
@@ -66,15 +72,77 @@ const connect = () => {
       case "GAME_STATE":
         setActiveGameState(data.game.state);
         break;
+
+      case "PAIRING":
+
+        break;
     
       default:
         break;
     }
   };
 
-  socket.onerror = error => {
+  adminSocket.onerror = error => {
     console.error(error);
   };
 }
 
+const microcontrollerConnect = () => {
+  microcontrollerSocket = new WebSocket("ws://localhost:8082/");
+  microcontrollerSocket.onopen = () => {
+    console.log("microcontroller socket open");
+  };
+
+  microcontrollerSocket.onclose = event => {
+    console.warn(event);
+  };
+
+  microcontrollerSocket.onmessage = event => {
+    const data = JSON.parse(event.data);
+
+    switch (data.type) {
+      case "PAIRING":
+        console.log("pairing frame received", data);
+        microcontrollerLEDs.classList.add("pairing");
+
+        // simulate a delay from the server
+        setTimeout(() => {
+          microcontrollerLEDs.classList.remove("pairing");
+          microcontrollerLEDs.classList.add("paired");
+          microcontroller.setAttribute("paired", "");
+          microcontroller.setAttribute("player-uuid", data.data.player.uuid);
+
+          setTimeout(() => {
+            microcontrollerLEDs.classList.remove("paired");
+            microcontrollerSocket.send(JSON.stringify({
+              type: "PAIRING_COMPLETE",
+              data: {
+                microcontroller: {
+                  uuid: microcontrollerUUID
+                }
+              }
+            }));
+          }, 3500);
+        }, 2500);
+        break;
+    
+      default:
+        break;
+    }
+  };
+
+  microcontrollerSocket.onerror = error => {
+    console.error(error);
+  };
+};
+
+microcontrollerBtnLeft.addEventListener("click", () => {
+
+});
+
+microcontrollerBtnRight.addEventListener("click", () => {
+
+})
+
 connect();
+microcontrollerConnect();

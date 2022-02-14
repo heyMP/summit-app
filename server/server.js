@@ -1,6 +1,17 @@
+/*
+ * Application Flow
+ * 1. CONNECT and CONFIGURE a player
+ * 2. If a user has a microcontroller, PAIR the microcontroller
+ * 3. TEST the microcontroller
+ * 4. PLAY the game
+ * 5. PAUSE the game
+ * 6. GAMEOVER
+ */
+
 const {createServer} = require('wss');
 let clientWs;
 let adminWs;
+let microcontrollerWs;
 
 const gameStates = {
   "lobby": { name: "lobby", order: 0, active: true, },
@@ -21,16 +32,24 @@ const setCurrentGameState = state => {
   }
 
   currentGameState = gameStates[state];
-
-  const data = JSON.stringify({
+  
+  const data = {
     type: "GAME_STATE",
     game: {
       state: state
     }
-  });
+  };
 
-  adminWs.send(data);
-  clientWs.send(data);
+  sendMessage(adminWs, data);
+  sendMessage(clientWs, data);
+}
+
+const sendMessage = (socket, data) => {
+  if (!socket) {
+    return;
+  }
+
+  socket.send(JSON.stringify(data));
 }
  
 createServer(function connectionListener (ws) {
@@ -55,11 +74,19 @@ createServer(function connectionListener (ws) {
 
     switch (event.type) {
       case "CONNECTION":
-        ws.send(JSON.stringify({
+        sendMessage(ws, {
           type: "CONFIGURATION",
           player,
           game
-        }));
+        });
+        break;
+
+      case "PAIRING":
+        console.log("pairing", event);
+        sendMessage(microcontrollerWs, {
+          type: "PAIRING",
+          data: event.data
+        });
         break;
     
       default:
@@ -81,10 +108,10 @@ createServer(function connectionListener(ws) {
 
     switch (event.type) {
       case "CONNECTION":
-        ws.send(JSON.stringify({
+        sendMessage(ws, {
           type: "CONFIGURATION",
           gameStates
-        }));
+        });
         break;
 
       case "GAME_STATE_CHANGE":
@@ -99,4 +126,33 @@ createServer(function connectionListener(ws) {
 .listen(8081, function () {
   const {address, port} = this.address() // this is the http[s].Server
   console.log('admin socket listening on http://%s:%d (%s)', /::/.test(address) ? '0.0.0.0' : address, port)
+});
+
+// microcontroller socket on ws://localhost:8082
+// this is to simulate a connection from a bluetooth
+// device
+createServer(function connectionListener(ws) {
+  microcontrollerWs = ws;
+
+  ws.on("message", event => {
+    event = JSON.parse(event);
+
+    switch (event.type) {
+      case "PAIRING_COMPLETE":
+        // send a message to the phone socket to let the phone
+        // know that pairing has completed
+        sendMessage(clientWs, {
+          type: "PAIRING_COMPLETE",
+          data: event.data
+        });
+        break;
+    
+      default:
+        break;
+    }
+  });
+})
+.listen(8082, function () {
+  const {address, port} = this.address() // this is the http[s].Server
+  console.log('microcontroller socket listening on http://%s:%d (%s)', /::/.test(address) ? '0.0.0.0' : address, port)
 });
