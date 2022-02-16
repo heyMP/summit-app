@@ -52,7 +52,7 @@ export const getLocalStorage = () => {
 		}
 	};
 };
-	
+
 export const updateLocalStorage = (gameId: string, playerId: string, username: string) => {
 	localStorage.setItem("gameId", gameId);
 	localStorage.setItem("playerId", playerId);
@@ -118,10 +118,12 @@ export const storeMachine = createMachine({
 		configuration: assign((context, event) => {
 			if (event.type === 'CONFIGURATION') {
 				// updateLocalStorage
+				// @ts-ignore
 				updateLocalStorage(event.game.id, event.player.userid, event.player.username);
 				console.log("player configuration complete");
 
 				return {
+					// @ts-ignore
 					name: event.player.username
 				}
 			}
@@ -130,7 +132,7 @@ export const storeMachine = createMachine({
 		pairing: assign((context, event) => {
 			if (event.type === 'PAIRING') {
 				console.log("pairing action");
-				
+
 				// begin pairing process with microcontroller
 				console.log("begin pairing process with microcontroller");
 				console.log(event);
@@ -150,6 +152,7 @@ export const storeMachine = createMachine({
 			// accept it.
 			if (event.type === 'FULFILL') {
 				return {
+					// @ts-ignore
 					orderId: event.orderId
 				}
 			}
