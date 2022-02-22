@@ -14,7 +14,11 @@
     "sourceMap": true,
     "inlineSources": true,
     "rootDir": "./",
-    "incremental": true
+    "incremental": true,
+    "plugins": [
+      { "name": "typescript-lit-html-plugin" },
+      { "name": "ts-lit-plugin" }
+    ]
   },
-  "include": ["**/*.ts"]
+  "include": ["**/*.ts"],
 }

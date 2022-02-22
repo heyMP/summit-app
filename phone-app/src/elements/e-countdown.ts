@@ -8,7 +8,7 @@ export class ECountdown extends LitElement {
   static readonly styles = [styles];
 
   @property()
-	start: number = 5;
+	start: number = 60;
 
   @property({ type: Boolean, reflect: true })
 	complete = false;

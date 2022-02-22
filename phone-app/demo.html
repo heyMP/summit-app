@@ -48,17 +48,23 @@
   <section>
     <h2>e-countdown</h2>
     <e-countdown></e-countdown>
-    <script>
-      const countdowns = [...document.querySelectorAll('e-countdown')];
-      countdowns.forEach(el => {
-        el.datetime = new Date();
-      });
-    </script>
+  </section>
+
+  <section>
+    <h2>e-order</h2>
+    <e-order></e-order>
+  </section>
+
+  <section>
+    <h2>e-meter</h2>
+    <e-meter></e-meter>
   </section>
 
   <script type="module" src="./out-tsc/src/elements/e-page.js"></script>
   <script type="module" src="./out-tsc/src/elements/e-button.js"></script>
   <script type="module" src="./out-tsc/src/elements/e-countdown.js"></script>
+  <script type="module" src="./out-tsc/src/elements/e-order.js"></script>
+  <script type="module" src="./out-tsc/src/elements/e-meter.js"></script>
 </body>
 
 </html>
