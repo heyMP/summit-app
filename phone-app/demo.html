@@ -45,8 +45,20 @@
     </e-page>
   </section>
 
+  <section>
+    <h2>e-countdown</h2>
+    <e-countdown></e-countdown>
+    <script>
+      const countdowns = [...document.querySelectorAll('e-countdown')];
+      countdowns.forEach(el => {
+        el.datetime = new Date();
+      });
+    </script>
+  </section>
+
   <script type="module" src="./out-tsc/src/elements/e-page.js"></script>
   <script type="module" src="./out-tsc/src/elements/e-button.js"></script>
+  <script type="module" src="./out-tsc/src/elements/e-countdown.js"></script>
 </body>
 
 </html>
